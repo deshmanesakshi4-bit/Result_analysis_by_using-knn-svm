@@ -9,7 +9,7 @@ Provides interactive web dashboard and REST API for:
   - Multi-imputation strategy comparison
 """
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import pandas as pd
 import numpy as np
 import os
@@ -30,6 +30,15 @@ CSV_PATH = os.path.join(os.path.dirname(__file__), "student_data.csv")
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, "static"),
+        "favicon.svg",
+        mimetype="image/svg+xml",
+    )
 
 
 @app.route("/api/data", methods=["GET"])
