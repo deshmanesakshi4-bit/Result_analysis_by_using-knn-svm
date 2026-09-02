@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Pass/Fail Prediction | KNN vs SVM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-graduation-cap logo-icon"></i>
+                <div class="logo-text">
+                    <span class="brand">EduPredict ML</span>
+                    <span class="sub-brand">KNN vs SVM Pass/Fail Classifier</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#predictor" class="nav-link active"><i class="fa-solid fa-wand-magic-sparkles"></i> Predictor</a>
+                <a href="#comparison" class="nav-link"><i class="fa-solid fa-chart-simple"></i> Model Comparison</a>
+                <a href="#dataset" class="nav-link"><i class="fa-solid fa-database"></i> Dataset & Imputation</a>
+                <a href="#analysis" class="nav-link"><i class="fa-solid fa-table-columns"></i> Strategy Analysis</a>
+            </nav>
+            <div class="status-indicator">
+                <span class="status-dot"></span> 20 Students Dataset Loaded
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="badge-tag"><i class="fa-solid fa-microchip"></i> Machine Learning Comparative Suite</div>
+                <h1 class="hero-title">Student Pass / Fail Prediction</h1>
+                <p class="hero-subtitle">
+                    Trained on past academic indicators (<strong>Previous Marks</strong>, <strong>Study Hours</strong>, and <strong>Attendance</strong>) with automated <strong>Mean / Median / Mode</strong> missing data imputation. Compare <strong>K-Nearest Neighbors (KNN)</strong> and <strong>Support Vector Machine (SVM)</strong> side-by-side in real-time.
+                </p>
+                <div class="control-panel-bar">
+                    <div class="control-group">
+                        <label><i class="fa-solid fa-filter"></i> Missing Data Strategy:</label>
+                        <select id="global-strategy-select" onchange="onStrategyChange(this.value)">
+                            <option value="mean" selected>Mean Imputation</option>
+                            <option value="median">Median Imputation</option>
+                            <option value="mode">Mode Imputation</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label><i class="fa-solid fa-circle-nodes"></i> KNN Neighbors (k):</label>
+                        <select id="knn-k-select" onchange="fetchModelComparison()">
+                            <option value="1">k = 1</option>
+                            <option value="3" selected>k = 3 (Optimal)</option>
+                            <option value="5">k = 5</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label><i class="fa-solid fa-vector-square"></i> SVM Kernel:</label>
+                        <select id="svm-kernel-select" onchange="fetchModelComparison()">
+                            <option value="linear" selected>Linear Kernel</option>
+                            <option value="rbf">RBF Kernel</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: LIVE INTERACTIVE PREDICTOR -->
+        <section id="predictor" class="card-section">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="icon-box icon-purple"><i class="fa-solid fa-bolt"></i></div>
+                    <div>
+                        <h2>Live Student Outcome Predictor</h2>
+                        <p class="section-desc">Adjust the student's metrics below to observe real-time predictions and confidence scores from both models.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="predictor-grid">
+                <!-- Input Controls -->
+                <div class="inputs-card">
+                    <h3><i class="fa-solid fa-sliders"></i> Input Student Metrics</h3>
+
+                    <!-- Previous Marks -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="marks-input"><i class="fa-solid fa-file-signature"></i> Previous Marks (0 - 100)</label>
+                            <span class="value-badge" id="marks-val-display">75</span>
+                        </div>
+                        <input type="range" id="marks-slider" min="0" max="100" value="75" oninput="syncInputs('marks', this.value)">
+                        <input type="number" id="marks-input" min="0" max="100" value="75" oninput="syncInputs('marks', this.value)" class="numeric-input">
+                    </div>
+
+                    <!-- Study Hours -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="hours-input"><i class="fa-solid fa-clock"></i> Weekly Study Hours (0 - 24 hrs)</label>
+                            <span class="value-badge" id="hours-val-display">10</span>
+                        </div>
+                        <input type="range" id="hours-slider" min="0" max="24" step="0.5" value="10" oninput="syncInputs('hours', this.value)">
+                        <input type="number" id="hours-input" min="0" max="24" step="0.5" value="10" oninput="syncInputs('hours', this.value)" class="numeric-input">
+                    </div>
+
+                    <!-- Attendance -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="attendance-input"><i class="fa-solid fa-user-check"></i> Attendance Percentage (0 - 100%)</label>
+                            <span class="value-badge" id="attendance-val-display">80%</span>
+                        </div>
+                        <input type="range" id="attendance-slider" min="0" max="100" value="80" oninput="syncInputs('attendance', this.value)">
+                        <input type="number" id="attendance-input" min="0" max="100" value="80" oninput="syncInputs('attendance', this.value)" class="numeric-input">
+                    </div>
+
+                    <!-- Quick Preset Buttons -->
+                    <div class="presets-wrap">
+                        <span class="preset-label">Quick Presets:</span>
+                        <button class="preset-btn" onclick="applyPreset(90, 16, 95)"><i class="fa-solid fa-star"></i> High Achiever</button>
+                        <button class="preset-btn" onclick="applyPreset(52, 5.5, 68)"><i class="fa-solid fa-scale-balanced"></i> Borderline</button>
+                        <button class="preset-btn" onclick="applyPreset(32, 2, 42)"><i class="fa-solid fa-triangle-exclamation"></i> At Risk</button>
+                    </div>
+                </div>
+
+                <!-- Prediction Results Display -->
+                <div class="results-container">
+                    <div class="prediction-card-grid">
+                        <!-- KNN Prediction Card -->
+                        <div class="model-prediction-card" id="knn-pred-card">
+                            <div class="model-card-header">
+                                <div class="model-badge knn-badge"><i class="fa-solid fa-circle-nodes"></i> KNN Classifier</div>
+                                <span class="model-meta" id="knn-meta-text">k = 3</span>
+                            </div>
+                            <div class="pred-outcome-badge" id="knn-outcome-badge">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i> Calculating...
+                            </div>
+                            <div class="probability-bars">
+                                <div class="prob-row">
+                                    <span>Pass Probability</span>
+                                    <strong id="knn-pass-prob">--%</strong>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill pass-fill" id="knn-pass-bar" style="width: 0%;"></div>
+                                </div>
+                                <div class="prob-row">
+                                    <span>Fail Probability</span>
+                                    <strong id="knn-fail-prob">--%</strong>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill fail-fill" id="knn-fail-bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SVM Prediction Card -->
+                        <div class="model-prediction-card" id="svm-pred-card">
+                            <div class="model-card-header">
+                                <div class="model-badge svm-badge"><i class="fa-solid fa-vector-square"></i> SVM Classifier</div>
+                                <span class="model-meta" id="svm-meta-text">Linear Kernel</span>
+                            </div>
+                            <div class="pred-outcome-badge" id="svm-outcome-badge">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i> Calculating...
+                            </div>
+                            <div class="probability-bars">
+                                <div class="prob-row">
+                                    <span>Pass Probability</span>
+                                    <strong id="svm-pass-prob">--%</strong>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill pass-fill" id="svm-pass-bar" style="width: 0%;"></div>
+                                </div>
+                                <div class="prob-row">
+                                    <span>Fail Probability</span>
+                                    <strong id="svm-fail-prob">--%</strong>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill fail-fill" id="svm-fail-bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consensus & Agreement Banner -->
+                    <div class="consensus-banner" id="consensus-banner">
+                        <i class="fa-solid fa-handshake"></i>
+                        <span id="consensus-text">Evaluating model consensus...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MODEL PERFORMANCE COMPARISON -->
+        <section id="comparison" class="card-section">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="icon-box icon-blue"><i class="fa-solid fa-chart-column"></i></div>
+                    <div>
+                        <h2>Side-by-Side Model Performance Comparison</h2>
+                        <p class="section-desc">Direct accuracy and evaluation metric comparison between K-Nearest Neighbors (KNN) and Support Vector Machine (SVM).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Metric Cards -->
+            <div class="metrics-summary-grid">
+                <div class="metric-card">
+                    <div class="metric-title">KNN Test Accuracy</div>
+                    <div class="metric-value text-blue" id="knn-test-acc-val">--%</div>
+                    <div class="metric-sub">5-Fold CV: <span id="knn-cv-val">--%</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">SVM Test Accuracy</div>
+                    <div class="metric-value text-red" id="svm-test-acc-val">--%</div>
+                    <div class="metric-sub">5-Fold CV: <span id="svm-cv-val">--%</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Precision (Pass)</div>
+                    <div class="metric-split">
+                        <div>KNN: <strong id="knn-prec-val">--%</strong></div>
+                        <div>SVM: <strong id="svm-prec-val">--%</strong></div>
+                    </div>
+                    <div class="metric-sub">Positive predictive value</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">F1-Score (Pass)</div>
+                    <div class="metric-split">
+                        <div>KNN: <strong id="knn-f1-val">--%</strong></div>
+                        <div>SVM: <strong id="svm-f1-val">--%</strong></div>
+                    </div>
+                    <div class="metric-sub">Harmonic mean of P & R</div>
+                </div>
+            </div>
+
+            <!-- Comparative Table & Charts Grid -->
+            <div class="comparison-grid">
+                <!-- Metrics Table -->
+                <div class="table-container">
+                    <table class="custom-table" id="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Evaluation Metric</th>
+                                <th>KNN (<span id="tbl-knn-param">k=3</span>)</th>
+                                <th>SVM (<span id="tbl-svm-param">Linear</span>)</th>
+                                <th>Comparison</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong><i class="fa-solid fa-bullseye"></i> Training Accuracy</strong></td>
+                                <td id="tbl-knn-train-acc">--%</td>
+                                <td id="tbl-svm-train-acc">--%</td>
+                                <td id="tbl-train-comp"><span class="badge-status">Tied</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fa-solid fa-vial-circle-check"></i> Test Accuracy (25% split)</strong></td>
+                                <td id="tbl-knn-test-acc">--%</td>
+                                <td id="tbl-svm-test-acc">--%</td>
+                                <td id="tbl-test-comp"><span class="badge-status">Tied</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fa-solid fa-arrows-split-up-and-left"></i> 5-Fold Cross-Validation</strong></td>
+                                <td id="tbl-knn-cv-acc">--%</td>
+                                <td id="tbl-svm-cv-acc">--%</td>
+                                <td id="tbl-cv-comp"><span class="badge-status">Tied</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fa-solid fa-check-double"></i> Precision (Pass Class)</strong></td>
+                                <td id="tbl-knn-prec">--%</td>
+                                <td id="tbl-svm-prec">--%</td>
+                                <td id="tbl-prec-comp"><span class="badge-status">Tied</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fa-solid fa-magnifying-glass"></i> Recall (Pass Class)</strong></td>
+                                <td id="tbl-knn-rec">--%</td>
+                                <td id="tbl-svm-rec">--%</td>
+                                <td id="tbl-rec-comp"><span class="badge-status">Tied</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fa-solid fa-award"></i> F1-Score (Pass Class)</strong></td>
+                                <td id="tbl-knn-f1">--%</td>
+                                <td id="tbl-svm-f1">--%</td>
+                                <td id="tbl-f1-comp"><span class="badge-status">Tied</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Confusion Matrices Side-by-Side -->
+                    <div class="cm-section">
+                        <h4><i class="fa-solid fa-border-all"></i> Confusion Matrices (Test Evaluation)</h4>
+                        <div class="cm-grid">
+                            <div class="cm-card">
+                                <div class="cm-header knn-color">KNN Confusion Matrix</div>
+                                <div class="cm-table-wrap">
+                                    <table class="cm-table">
+                                        <tr>
+                                            <th></th>
+                                            <th>Pred Fail</th>
+                                            <th>Pred Pass</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Act Fail</th>
+                                            <td class="cm-cell cm-tn" id="knn-cm-tn">0</td>
+                                            <td class="cm-cell cm-fp" id="knn-cm-fp">0</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Act Pass</th>
+                                            <td class="cm-cell cm-fn" id="knn-cm-fn">0</td>
+                                            <td class="cm-cell cm-tp" id="knn-cm-tp">0</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="cm-card">
+                                <div class="cm-header svm-color">SVM Confusion Matrix</div>
+                                <div class="cm-table-wrap">
+                                    <table class="cm-table">
+                                        <tr>
+                                            <th></th>
+                                            <th>Pred Fail</th>
+                                            <th>Pred Pass</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Act Fail</th>
+                                            <td class="cm-cell cm-tn" id="svm-cm-tn">0</td>
+                                            <td class="cm-cell cm-fp" id="svm-cm-fp">0</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Act Pass</th>
+                                            <td class="cm-cell cm-fn" id="svm-cm-fn">0</td>
+                                            <td class="cm-cell cm-tp" id="svm-cm-tp">0</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Column -->
+                <div class="charts-column">
+                    <div class="chart-card">
+                        <h4>Accuracy Comparison (%)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="accuracyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Precision, Recall & F1-Score (%)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="metricsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DATASET & IMPUTATION INSPECTOR -->
+        <section id="dataset" class="card-section">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="icon-box icon-green"><i class="fa-solid fa-table"></i></div>
+                    <div>
+                        <h2>Past 20 Students Dataset & Imputation Inspector</h2>
+                        <p class="section-desc">Inspect all 20 historical records, identify missing cells (highlighted with tags), and view dynamically imputed values.</p>
+                    </div>
+                </div>
+                <div class="imputed-pill-group">
+                    <span class="imputed-pill">Imputed Marks: <strong id="pill-imp-marks">--</strong></span>
+                    <span class="imputed-pill">Imputed Hours: <strong id="pill-imp-hours">--</strong></span>
+                    <span class="imputed-pill">Imputed Attendance: <strong id="pill-imp-att">--</strong></span>
+                </div>
+            </div>
+
+            <div class="table-container dataset-table-wrap">
+                <table class="custom-table" id="students-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Previous Marks (out of 100)</th>
+                            <th>Study Hours (hrs/wk)</th>
+                            <th>Attendance (%)</th>
+                            <th>Historical Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-tbody">
+                        <tr><td colspan="6" class="text-center">Loading student records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 4: IMPUTATION STRATEGY COMPARISON -->
+        <section id="analysis" class="card-section">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="icon-box icon-orange"><i class="fa-solid fa-calculator"></i></div>
+                    <div>
+                        <h2>Imputation Strategy Comparison (Mean vs Median vs Mode)</h2>
+                        <p class="section-desc">Observe how each missing value imputation method alters the substituted values and model cross-validation accuracy.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="custom-table" id="imputation-comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Strategy</th>
+                            <th>Substituted Values (Marks / Hours / Attendance)</th>
+                            <th>KNN Test Acc</th>
+                            <th>KNN 5-Fold CV</th>
+                            <th>SVM Test Acc</th>
+                            <th>SVM 5-Fold CV</th>
+                            <th>Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="imputation-comp-tbody">
+                        <tr><td colspan="7" class="text-center">Loading comparison data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p><i class="fa-solid fa-code"></i> Student Pass/Fail Prediction ML Pipeline with KNN & SVM</p>
+            <p class="footer-muted">Developed with Python, Scikit-Learn, Flask & Modern Web Standards</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
