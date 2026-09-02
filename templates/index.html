@@ -10,8 +10,948 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+/* ==========================================================================
+   Modern CSS Theme & Design System for EduPredict ML Dashboard
+   ========================================================================== */
+
+:root {
+    --bg-main: #0b0f19;
+    --bg-surface: #111827;
+    --bg-surface-elevated: #1e293b;
+    --bg-surface-card: rgba(30, 41, 59, 0.7);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(99, 102, 241, 0.3);
+    
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-glow: rgba(99, 102, 241, 0.25);
+    
+    --accent-blue: #38bdf8;
+    --accent-purple: #c084fc;
+    --accent-green: #34d399;
+    --accent-red: #f87171;
+    --accent-orange: #fbbf24;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    
+    --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-color);
+    --shadow-glow: 0 0 25px var(--primary-glow);
+    
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.06) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-surface-elevated);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Header & Navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.logo-icon {
+    font-size: 1.75rem;
+    color: var(--primary-light);
+    background: rgba(99, 102, 241, 0.15);
+    padding: 0.6rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sub-brand {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.status-indicator {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-green);
+}
+
+/* Main Content & Hero */
+.main-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.hero-section {
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-light);
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+}
+
+.hero-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.85rem;
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 900px;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.hero-subtitle strong {
+    color: var(--text-primary);
+}
+
+.control-panel-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    background: rgba(11, 15, 25, 0.7);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 220px;
+}
+
+.control-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.control-group select {
+    background: var(--bg-surface-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.control-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* Card Section */
+.card-section {
+    background: var(--bg-surface-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-card);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.icon-purple {
+    background: rgba(192, 132, 252, 0.15);
+    color: var(--accent-purple);
+    border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+.icon-blue {
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.icon-green {
+    background: rgba(52, 211, 153, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.icon-orange {
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--accent-orange);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.section-title-wrap h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.section-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+}
+
+/* Predictor Grid */
+.predictor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+}
+
+@media (max-width: 900px) {
+    .predictor-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.inputs-card {
+    background: rgba(17, 24, 39, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inputs-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-header label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.value-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-light);
+    background: rgba(99, 102, 241, 0.15);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--bg-surface-elevated);
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--primary);
+    transition: transform var(--transition-fast);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.numeric-input {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.65rem;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+    width: 90px;
+    align-self: flex-end;
+}
+
+.numeric-input:focus {
+    border-color: var(--primary);
+}
+
+.presets-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.preset-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.preset-btn {
+    background: var(--bg-surface-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.preset-btn:hover {
+    color: #fff;
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.15);
+}
+
+/* Results Display */
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.prediction-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+@media (max-width: 600px) {
+    .prediction-card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.model-prediction-card {
+    background: rgba(17, 24, 39, 0.75);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.model-prediction-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+.model-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.model-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.knn-badge {
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.svm-badge {
+    background: rgba(248, 113, 113, 0.15);
+    color: var(--accent-red);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.model-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.pred-outcome-badge {
+    text-align: center;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.outcome-pass {
+    background: rgba(52, 211, 153, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.outcome-fail {
+    background: rgba(248, 113, 113, 0.15);
+    color: var(--accent-red);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.probability-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.prob-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-surface-elevated);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pass-fill {
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.fail-fill {
+    background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+}
+
+.consensus-banner {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    padding: 0.9rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #e0e7ff;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+/* Metrics Summary Cards */
+.metrics-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: rgba(17, 24, 39, 0.7);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.metric-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.text-blue { color: var(--accent-blue); }
+.text-red { color: var(--accent-red); }
+
+.metric-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.metric-split {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 950px) {
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.table-container {
+    overflow-x: auto;
+    background: rgba(17, 24, 39, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.custom-table th {
+    background: var(--bg-surface-elevated);
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    padding: 0.85rem 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-table td {
+    padding: 0.85rem 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.badge-status {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+/* Confusion Matrices */
+.cm-section {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.cm-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.cm-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.cm-header {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.knn-color { color: var(--accent-blue); }
+.svm-color { color: var(--accent-red); }
+
+.cm-table {
+    width: 100%;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+}
+
+.cm-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.35rem;
+}
+
+.cm-cell {
+    padding: 0.65rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+    border-radius: var(--radius-sm);
+}
+
+.cm-tn { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
+.cm-tp { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
+.cm-fp { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); }
+.cm-fn { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); }
+
+/* Charts Column */
+.charts-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.chart-card {
+    background: rgba(17, 24, 39, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+}
+
+.chart-card h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 200px;
+}
+
+/* Imputation Pills & Tags */
+.imputed-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.imputed-pill {
+    font-size: 0.8rem;
+    background: rgba(52, 211, 153, 0.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+}
+
+.imputed-pill strong {
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.dataset-table-wrap {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.tag-missing {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.tag-imputed {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.badge-pass {
+    background: rgba(52, 211, 153, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.badge-fail {
+    background: rgba(248, 113, 113, 0.15);
+    color: var(--accent-red);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.footer {
+    border-top: 1px solid var(--border-color);
+    background: rgba(11, 15, 25, 0.8);
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+
+.footer-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.footer-muted {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+    </style>
 </head>
 <body>
     <!-- Top Navigation Bar -->
@@ -104,7 +1044,7 @@
                     <div class="input-group">
                         <div class="input-header">
                             <label for="hours-input"><i class="fa-solid fa-clock"></i> Weekly Study Hours (0 - 24 hrs)</label>
-                            <span class="value-badge" id="hours-val-display">10</span>
+                            <span class="value-badge" id="hours-val-display">10 hrs</span>
                         </div>
                         <input type="range" id="hours-slider" min="0" max="24" step="0.5" value="10" oninput="syncInputs('hours', this.value)">
                         <input type="number" id="hours-input" min="0" max="24" step="0.5" value="10" oninput="syncInputs('hours', this.value)" class="numeric-input">
@@ -437,6 +1377,395 @@
         </div>
     </footer>
 
-    <script src="/static/js/app.js"></script>
+    <script>
+/**
+ * Inline Frontend controller for EduPredict ML Dashboard.
+ * Guarantees zero broken scripts or styling on serverless runtimes.
+ */
+let currentStrategy = 'mean';
+let accuracyChart = null;
+let metricsChart = null;
+let predictDebounceTimer = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initCharts();
+    loadDashboard();
+});
+
+function loadDashboard() {
+    fetchDataset();
+    fetchModelComparison();
+    fetchImputationComparison();
+    runPrediction();
+}
+
+function onStrategyChange(newStrategy) {
+    currentStrategy = newStrategy;
+    loadDashboard();
+}
+
+async function fetchDataset() {
+    try {
+        const res = await fetch(`/api/data?strategy=${currentStrategy}`);
+        const data = await res.json();
+
+        document.getElementById('pill-imp-marks').innerText = data.imputed_values.Previous_Marks ?? '--';
+        document.getElementById('pill-imp-hours').innerText = (data.imputed_values.Study_Hours ?? '--') + ' hrs';
+        document.getElementById('pill-imp-att').innerText = (data.imputed_values.Attendance ?? '--') + '%';
+
+        const tbody = document.getElementById('students-tbody');
+        tbody.innerHTML = '';
+
+        data.raw_records.forEach((raw, i) => {
+            const imp = data.imputed_records[i];
+            const tr = document.createElement('tr');
+
+            const marksCell = raw.Previous_Marks === null
+                ? `<td><span class="tag-missing"><i class="fa-solid fa-triangle-exclamation"></i> Missing</span> &rarr; <span class="tag-imputed">${imp.Previous_Marks}</span></td>`
+                : `<td>${raw.Previous_Marks}</td>`;
+
+            const hoursCell = raw.Study_Hours === null
+                ? `<td><span class="tag-missing"><i class="fa-solid fa-triangle-exclamation"></i> Missing</span> &rarr; <span class="tag-imputed">${imp.Study_Hours}</span></td>`
+                : `<td>${raw.Study_Hours}</td>`;
+
+            const attCell = raw.Attendance === null
+                ? `<td><span class="tag-missing"><i class="fa-solid fa-triangle-exclamation"></i> Missing</span> &rarr; <span class="tag-imputed">${imp.Attendance}%</span></td>`
+                : `<td>${raw.Attendance}%</td>`;
+
+            const resBadge = raw.Result.toLowerCase() === 'pass'
+                ? `<span class="badge-pass"><i class="fa-solid fa-check"></i> Pass</span>`
+                : `<span class="badge-fail"><i class="fa-solid fa-xmark"></i> Fail</span>`;
+
+            const statusCell = raw.has_missing
+                ? `<td><span class="badge-status">Imputed (${currentStrategy.toUpperCase()})</span></td>`
+                : `<td><span style="color: var(--text-muted); font-size: 0.8rem;">Complete</span></td>`;
+
+            tr.innerHTML = `
+                <td><strong>#${raw.Student_ID}</strong></td>
+                ${marksCell}
+                ${hoursCell}
+                ${attCell}
+                <td>${resBadge}</td>
+                ${statusCell}
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (err) {
+        console.error('Error fetching dataset:', err);
+    }
+}
+
+async function fetchModelComparison() {
+    try {
+        const k = document.getElementById('knn-k-select').value;
+        const kernel = document.getElementById('svm-kernel-select').value;
+
+        const res = await fetch(`/api/models?strategy=${currentStrategy}&k=${k}&kernel=${kernel}`);
+        const data = await res.json();
+
+        document.getElementById('knn-test-acc-val').innerText = `${data.knn.test_accuracy}%`;
+        document.getElementById('knn-cv-val').innerText = `${data.knn.cv_accuracy_mean}% (±${data.knn.cv_accuracy_std}%)`;
+
+        document.getElementById('svm-test-acc-val').innerText = `${data.svm.test_accuracy}%`;
+        document.getElementById('svm-cv-val').innerText = `${data.svm.cv_accuracy_mean}% (±${data.svm.cv_accuracy_std}%)`;
+
+        document.getElementById('knn-prec-val').innerText = `${data.knn.precision}%`;
+        document.getElementById('svm-prec-val').innerText = `${data.svm.precision}%`;
+
+        document.getElementById('knn-f1-val').innerText = `${data.knn.f1_score}%`;
+        document.getElementById('svm-f1-val').innerText = `${data.svm.f1_score}%`;
+
+        document.getElementById('tbl-knn-param').innerText = `k=${k}`;
+        document.getElementById('tbl-svm-param').innerText = kernel === 'linear' ? 'Linear' : 'RBF';
+
+        document.getElementById('tbl-knn-train-acc').innerText = `${data.knn.train_accuracy}%`;
+        document.getElementById('tbl-svm-train-acc').innerText = `${data.svm.train_accuracy}%`;
+        updateCompBadge('tbl-train-comp', data.knn.train_accuracy, data.svm.train_accuracy);
+
+        document.getElementById('tbl-knn-test-acc').innerText = `${data.knn.test_accuracy}%`;
+        document.getElementById('tbl-svm-test-acc').innerText = `${data.svm.test_accuracy}%`;
+        updateCompBadge('tbl-test-comp', data.knn.test_accuracy, data.svm.test_accuracy);
+
+        document.getElementById('tbl-knn-cv-acc').innerText = `${data.knn.cv_accuracy_mean}%`;
+        document.getElementById('tbl-svm-cv-acc').innerText = `${data.svm.cv_accuracy_mean}%`;
+        updateCompBadge('tbl-cv-comp', data.knn.cv_accuracy_mean, data.svm.cv_accuracy_mean);
+
+        document.getElementById('tbl-knn-prec').innerText = `${data.knn.precision}%`;
+        document.getElementById('tbl-svm-prec').innerText = `${data.svm.precision}%`;
+        updateCompBadge('tbl-prec-comp', data.knn.precision, data.svm.precision);
+
+        document.getElementById('tbl-knn-rec').innerText = `${data.knn.recall}%`;
+        document.getElementById('tbl-svm-rec').innerText = `${data.svm.recall}%`;
+        updateCompBadge('tbl-rec-comp', data.knn.recall, data.svm.recall);
+
+        document.getElementById('tbl-knn-f1').innerText = `${data.knn.f1_score}%`;
+        document.getElementById('tbl-svm-f1').innerText = `${data.svm.f1_score}%`;
+        updateCompBadge('tbl-f1-comp', data.knn.f1_score, data.svm.f1_score);
+
+        document.getElementById('knn-cm-tn').innerText = data.knn.confusion_matrix[0][0];
+        document.getElementById('knn-cm-fp').innerText = data.knn.confusion_matrix[0][1];
+        document.getElementById('knn-cm-fn').innerText = data.knn.confusion_matrix[1][0];
+        document.getElementById('knn-cm-tp').innerText = data.knn.confusion_matrix[1][1];
+
+        document.getElementById('svm-cm-tn').innerText = data.svm.confusion_matrix[0][0];
+        document.getElementById('svm-cm-fp').innerText = data.svm.confusion_matrix[0][1];
+        document.getElementById('svm-cm-fn').innerText = data.svm.confusion_matrix[1][0];
+        document.getElementById('svm-cm-tp').innerText = data.svm.confusion_matrix[1][1];
+
+        updateCharts(data);
+
+        document.getElementById('knn-meta-text').innerText = `k = ${k}`;
+        document.getElementById('svm-meta-text').innerText = `${kernel === 'linear' ? 'Linear' : 'RBF'} Kernel`;
+
+    } catch (err) {
+        console.error('Error fetching model comparison:', err);
+    }
+}
+
+function updateCompBadge(elementId, knnScore, svmScore) {
+    const el = document.getElementById(elementId);
+    const diff = svmScore - knnScore;
+    if (Math.abs(diff) < 0.01) {
+        el.innerHTML = `<span class="badge-status">Tied</span>`;
+    } else if (diff > 0) {
+        el.innerHTML = `<span class="badge-status" style="background: rgba(248, 113, 113, 0.2); color: var(--accent-red);">SVM (+${diff.toFixed(1)}%)</span>`;
+    } else {
+        el.innerHTML = `<span class="badge-status" style="background: rgba(56, 189, 248, 0.2); color: var(--accent-blue);">KNN (+${(-diff).toFixed(1)}%)</span>`;
+    }
+}
+
+function syncInputs(type, val) {
+    if (type === 'marks') {
+        document.getElementById('marks-slider').value = val;
+        document.getElementById('marks-input').value = val;
+        document.getElementById('marks-val-display').innerText = val;
+    } else if (type === 'hours') {
+        document.getElementById('hours-slider').value = val;
+        document.getElementById('hours-input').value = val;
+        document.getElementById('hours-val-display').innerText = `${val} hrs`;
+    } else if (type === 'attendance') {
+        document.getElementById('attendance-slider').value = val;
+        document.getElementById('attendance-input').value = val;
+        document.getElementById('attendance-val-display').innerText = `${val}%`;
+    }
+
+    clearTimeout(predictDebounceTimer);
+    predictDebounceTimer = setTimeout(runPrediction, 150);
+}
+
+function applyPreset(marks, hours, attendance) {
+    syncInputs('marks', marks);
+    syncInputs('hours', hours);
+    syncInputs('attendance', attendance);
+}
+
+async function runPrediction() {
+    const marks = document.getElementById('marks-input').value;
+    const hours = document.getElementById('hours-input').value;
+    const attendance = document.getElementById('attendance-input').value;
+    const k = document.getElementById('knn-k-select').value;
+    const kernel = document.getElementById('svm-kernel-select').value;
+
+    try {
+        const res = await fetch('/api/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                marks,
+                hours,
+                attendance,
+                strategy: currentStrategy,
+                k,
+                kernel
+            })
+        });
+        const data = await res.json();
+        if (!data.success) return;
+
+        const knnOutcomeEl = document.getElementById('knn-outcome-badge');
+        if (data.knn.prediction.toLowerCase() === 'pass') {
+            knnOutcomeEl.className = 'pred-outcome-badge outcome-pass';
+            knnOutcomeEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> PASS`;
+        } else {
+            knnOutcomeEl.className = 'pred-outcome-badge outcome-fail';
+            knnOutcomeEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> FAIL`;
+        }
+        document.getElementById('knn-pass-prob').innerText = `${data.knn.pass_probability}%`;
+        document.getElementById('knn-fail-prob').innerText = `${data.knn.fail_probability}%`;
+        document.getElementById('knn-pass-bar').style.width = `${data.knn.pass_probability}%`;
+        document.getElementById('knn-fail-bar').style.width = `${data.knn.fail_probability}%`;
+
+        const svmOutcomeEl = document.getElementById('svm-outcome-badge');
+        if (data.svm.prediction.toLowerCase() === 'pass') {
+            svmOutcomeEl.className = 'pred-outcome-badge outcome-pass';
+            svmOutcomeEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> PASS`;
+        } else {
+            svmOutcomeEl.className = 'pred-outcome-badge outcome-fail';
+            svmOutcomeEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> FAIL`;
+        }
+        document.getElementById('svm-pass-prob').innerText = `${data.svm.pass_probability}%`;
+        document.getElementById('svm-fail-prob').innerText = `${data.svm.fail_probability}%`;
+        document.getElementById('svm-pass-bar').style.width = `${data.svm.pass_probability}%`;
+        document.getElementById('svm-fail-bar').style.width = `${data.svm.fail_probability}%`;
+
+        const consensusEl = document.getElementById('consensus-text');
+        if (data.agreement) {
+            consensusEl.innerHTML = `<strong>Full Agreement:</strong> Both KNN and SVM predict the student will <strong>${data.knn.prediction.toUpperCase()}</strong>.`;
+        } else {
+            consensusEl.innerHTML = `<strong>Divergent Decision:</strong> KNN predicts <strong>${data.knn.prediction.toUpperCase()}</strong> (${data.knn.pass_probability}% pass prob) while SVM predicts <strong>${data.svm.prediction.toUpperCase()}</strong> (${data.svm.pass_probability}% pass prob).`;
+        }
+
+    } catch (err) {
+        console.error('Error during prediction:', err);
+    }
+}
+
+async function fetchImputationComparison() {
+    try {
+        const res = await fetch('/api/compare-imputations');
+        const data = await res.json();
+
+        const tbody = document.getElementById('imputation-comp-tbody');
+        tbody.innerHTML = '';
+
+        data.imputation_comparison.forEach(item => {
+            const tr = document.createElement('tr');
+            const isOptimal = item.strategy.toLowerCase() === 'mean';
+            const recBadge = isOptimal
+                ? `<span class="badge-pass"><i class="fa-solid fa-thumbs-up"></i> Recommended</span>`
+                : (item.strategy.toLowerCase() === 'median' ? `<span class="badge-status">Good Alternative</span>` : `<span class="badge-fail">Least Recommended</span>`);
+
+            tr.innerHTML = `
+                <td><strong>${item.strategy}</strong></td>
+                <td><code>Marks: ${item.imputed_marks} | Hours: ${item.imputed_hours} | Att: ${item.imputed_attendance}%</code></td>
+                <td><strong>${item.knn_test_acc}%</strong></td>
+                <td>${item.knn_cv_acc}%</td>
+                <td><strong>${item.svm_test_acc}%</strong></td>
+                <td>${item.svm_cv_acc}%</td>
+                <td>${recBadge}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (err) {
+        console.error('Error fetching imputation comparison:', err);
+    }
+}
+
+function initCharts() {
+    const accCtx = document.getElementById('accuracyChart').getContext('2d');
+    accuracyChart = new Chart(accCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Train Acc', 'Test Acc', '5-Fold CV'],
+            datasets: [
+                {
+                    label: 'KNN',
+                    data: [0, 0, 0],
+                    backgroundColor: '#38bdf8',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'SVM',
+                    data: [0, 0, 0],
+                    backgroundColor: '#f87171',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 110,
+                    grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                    ticks: { color: '#94a3b8', callback: val => `${val}%` }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8' }
+                }
+            },
+            plugins: {
+                legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+            }
+        }
+    });
+
+    const metCtx = document.getElementById('metricsChart').getContext('2d');
+    metricsChart = new Chart(metCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Precision', 'Recall', 'F1-Score'],
+            datasets: [
+                {
+                    label: 'KNN',
+                    data: [0, 0, 0],
+                    backgroundColor: '#34d399',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'SVM',
+                    data: [0, 0, 0],
+                    backgroundColor: '#c084fc',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 110,
+                    grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                    ticks: { color: '#94a3b8', callback: val => `${val}%` }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8' }
+                }
+            },
+            plugins: {
+                legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+            }
+        }
+    });
+}
+
+function updateCharts(data) {
+    if (accuracyChart) {
+        accuracyChart.data.datasets[0].data = [
+            data.knn.train_accuracy,
+            data.knn.test_accuracy,
+            data.knn.cv_accuracy_mean
+        ];
+        accuracyChart.data.datasets[1].data = [
+            data.svm.train_accuracy,
+            data.svm.test_accuracy,
+            data.svm.cv_accuracy_mean
+        ];
+        accuracyChart.update();
+    }
+
+    if (metricsChart) {
+        metricsChart.data.datasets[0].data = [
+            data.knn.precision,
+            data.knn.recall,
+            data.knn.f1_score
+        ];
+        metricsChart.data.datasets[1].data = [
+            data.svm.precision,
+            data.svm.recall,
+            data.svm.f1_score
+        ];
+        metricsChart.update();
+    }
+}
+    </script>
 </body>
 </html>
